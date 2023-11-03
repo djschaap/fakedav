@@ -15,10 +15,12 @@
 # runtime is the final runtime image.
 #
 # To build image locally:
-#   docker build --progress plain --build-arg CIRCLE_SHA1=$(git rev-parse --short HEAD) -t fusedav .
+#   scripts/compute-version.sh | tee new-version.sh
+#   docker build --progress plain -t fusedav .
 #
 # To compile/build and extract the RPM into the `extract` directory:
-#   docker build --progress plain --build-arg GITHUB_SHA=$(git rev-parse --short HEAD) --target extract -t fusedav-extract . --output=extract
+#   scripts/compute-version.sh | tee new-version.sh
+#   docker build --progress plain --target extract . --output=extract
 #
 FROM docker.io/library/fedora:28 AS base
 
@@ -50,6 +52,7 @@ FROM base AS dev
 
 RUN \
   dnf install -y \
+    'dnf-command(config-manager)' \
     autoconf \
     automake \
     bind-utils \
@@ -72,6 +75,8 @@ RUN \
     tcpdump \
     uriparser-devel \
     zlib-devel \
+  && sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo \
+  && sudo dnf install -y gh \
   && dnf clean all \
   && rm -rf /var/cache/dnf \
   && gem install fpm --no-rdoc --no-ri \
@@ -83,57 +88,42 @@ RUN \
 # Installing autotag above makes it available within a dev container.
 # When building via CI/CD, autotag is installed/called elsewhere.
 
+# Installing gh above makes it available within a dev container.
+# When building via GitHub Actions, gh is installed/called elsewhere.
+
 USER vscode
 
 ########################################
 
 FROM dev AS compile
 
+# new-version.sh MUST be created before we get here
 COPY . /build
 WORKDIR /build
 
-ARG CIRCLE_BRANCH="unknown"
-ARG CIRCLE_BUILD_NUM=""
-ARG CIRCLE_SHA1=0000000
-
-# CHANNEL is always `release` now.
-# Historically, CHANNEL could be: dev, stage, yolo, release
-ARG CHANNEL=release
-
-# Set PACKAGECLOUD_REPO to `internal` or `internal-staging` to publish RPM.
-ARG PACKAGECLOUD_REPO=""
-
-# RPM_VERSION is set here for local/direct `docker build` use; CircleCI builds
-# will set their own value.
-ARG RPM_VERSION="0.0.0+0"
-
-# SEMVER is set here for local/direct `docker build` use; CircleCI builds
-# will set their own value.
-ARG SEMVER="0.0.0-local"
-
 RUN \
   sudo chown -R vscode /build \
-  && echo "${RPM_VERSION}" > VERSION \
-  && scripts/build-rpm.sh "${CHANNEL}" \
-  && if [ -n "${PACKAGECLOUD_REPO}" ] ; then \
-      echo SKIPPING scripts/push_packagecloud.sh ; \
-    else \
-      echo "NOT pushing RPM to Packagecloud as this is a pre-release build" ; \
-    fi
+  && scripts/build-rpm.sh
 
 ########################################
 
 FROM scratch AS extract
 
-COPY --from=compile /build/pkg pkg
+COPY --from=compile /home/vscode/rpmbuild/RPMS RPMS
+COPY --from=compile /home/vscode/rpmbuild/SRPMS SRPMS
+COPY --from=compile /build/LATEST-RPM-VER-REL LATEST-RPM-VER-REL
 
 ########################################
 
 FROM base AS runtime
 
-ARG CHANNEL=release
+COPY --from=compile \
+  /build/LATEST-RPM-VER-REL \
+  /home/vscode/rpmbuild/RPMS/x86_64/fusedav-*.rpm \
+  /tmp/
 
-COPY --from=compile /build/src/fusedav "/opt/pantheon/fusedav-${CHANNEL}/fusedav-${CHANNEL}"
-COPY scripts/exec_wrapper/mount.fusedav_chan "/usr/sbin/mount.fusedav-${CHANNEL}"
+RUN \
+  LATEST=$(cat /tmp/LATEST-RPM-VER-REL) \
+  && sudo rpm -i "/tmp/fusedav-${LATEST}.x86_64.rpm"
 
 USER fusedav
