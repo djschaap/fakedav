@@ -35,8 +35,10 @@ jobs:
           echo "local branch(es):"
           git branch -v
           echo
-          echo "create local master branch for autotag"
-          git branch master origin/master
+          if [ ! -e .git/refs/heads/master ] ; then
+            echo "create local master branch for autotag"
+            git branch master origin/master
+          fi
           echo
           echo "new-version.sh:"
           scripts/compute-version.sh | tee new-version.sh
