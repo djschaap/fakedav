@@ -73,6 +73,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish git tag
         run: |
+          . new-version.sh
           if [ -n "${GIT_TAG}" ] ; then
             echo "git push origin \"${GIT_TAG}\""
             git push origin "${GIT_TAG}"
