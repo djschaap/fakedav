@@ -62,7 +62,6 @@ if [ "${branch}" == "main" -o "${branch}" == "master" ] ; then
   # the generation of a potentially confusing/conflicting git tag.
   bare_ver="$(autotag -n)"
 
-  git_tag="v${bare_ver}"
   GITHUB_RELEASE_NAME="v${bare_ver}"
   rpm_ver=$bare_ver
 
@@ -71,7 +70,6 @@ if [ "${branch}" == "main" -o "${branch}" == "master" ] ; then
 else
   full_semver="$(autotag -n -p "${branch}.${build_num}" -m $git_commit)"
   bare_ver=$(autotag -n)
-  git_tag=""
   GITHUB_RELEASE_NAME="v${full_semver}"
   rpm_ver="${bare_ver}~${branch}"
 fi
@@ -81,10 +79,6 @@ fi
 #   - GITHUB_REF_NAME is fix-bug.
 #   - GITHUB_RUN_NUMBER is 3.
 #   - GITHUB_SHA is abc1234fffff.
-
-# iff main/master: v0.0.2
-# else: empty string
-echo "export GIT_TAG=${git_tag}"
 
 # iff main/master: v0.0.2
 # else: v0.0.2~fix-bug-3
