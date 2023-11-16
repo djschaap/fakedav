@@ -94,9 +94,9 @@ echo "export IMAGE_TAGS=( ${IMAGE_TAGS[@]} )" # keep args separate
 echo "export SEMVER=${full_semver}"
 
 # iff main/master: RPM_VERSION=0.0.2         RPM_RELEASE=1
-#            else: RPM_VERSION=0.0.2~fix-bug RPM_RELEASE=3
+#            else: RPM_VERSION=0.0.2~fix-bug RPM_RELEASE=1
 #
-# Originally, iff main/master, we set RPM_RELEASE to $build_num; it is
-# unclear if this is useful or merely distracting.
+# Originally, we set RPM_RELEASE to $build_num; it is unclear if this is
+# useful or merely distracting.
 echo "export RPM_VERSION=${rpm_ver}"
 echo "export RPM_RELEASE=1"
