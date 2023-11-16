@@ -1,6 +1,6 @@
 Name: fusedav
 Version: RPM_VERSION
-Release: RPM_RELEASE
+Release: RPM_RELEASE%{?dist}
 License: GPLv2
 URL: https://github.com/pantheon-systems/fusedav
 Vendor: Pantheon
