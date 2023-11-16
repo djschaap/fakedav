@@ -61,7 +61,6 @@ RUN \
     make \
     procps-ng \
     rpm-build \
-    ruby-devel \
     strace \
     systemd-devel \
     tcpdump \
@@ -71,8 +70,6 @@ RUN \
   && sudo dnf install -y gh \
   && dnf clean all \
   && rm -rf /var/cache/dnf \
-  && gem install fpm --no-rdoc --no-ri \
-  && gem install package_cloud -v 0.2.45 \
   && curl -fsSL https://github.com/pantheon-systems/autotag/releases/latest/download/autotag_linux_amd64 \
     -o /usr/local/bin/autotag \
   && chmod 0755 /usr/local/bin/autotag
