@@ -1,5 +1,5 @@
 #!/bin/sh
-set -euo pipefail
+set -eou pipefail
 
 # upload-gh-assets.sh is meant to be called automatically by Github Actions.
 # Before calling this script, new-version.sh MUST already be loaded into our
