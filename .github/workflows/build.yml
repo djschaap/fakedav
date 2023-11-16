@@ -86,12 +86,12 @@ jobs:
           # Note that GitHub converts the tilde (`~`) which indicates a pre-release
           # RPM version to a period (`.`) in the filename.  This should not affect
           # RPM version comparison operations.
-          gh release create "v${SEMVER}" -p --generate-notes extract/RPMS/x86_64/*.rpm extract/SRPMS/*.src.rpm
+          gh release create $GITHUB_RELEASE_NAME -p --generate-notes extract/RPMS/x86_64/*.rpm extract/SRPMS/*.src.rpm
         if: github.ref != 'refs/heads/master'
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           . new-version.sh
-          gh release create "v${SEMVER}" --generate-notes extract/RPMS/x86_64/*.rpm extract/SRPMS/*.src.rpm
+          gh release create $GITHUB_RELEASE_NAME --generate-notes extract/RPMS/x86_64/*.rpm extract/SRPMS/*.src.rpm
         if: github.ref == 'refs/heads/master'

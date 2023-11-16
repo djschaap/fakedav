@@ -63,6 +63,7 @@ if [ "${branch}" == "main" -o "${branch}" == "master" ] ; then
   bare_ver="$(autotag -n)"
 
   git_tag="v${bare_ver}"
+  GITHUB_RELEASE_NAME="v${bare_ver}"
   rpm_ver=$bare_ver
 
   # when main/master, also create SemVer tag
@@ -71,6 +72,7 @@ else
   full_semver="$(autotag -n -p "${branch}.${build_num}" -m $git_commit)"
   bare_ver=$(autotag -n)
   git_tag=""
+  GITHUB_RELEASE_NAME="v${full_semver}"
   rpm_ver="${bare_ver}~${branch}"
 fi
 
@@ -84,6 +86,10 @@ fi
 # else: empty string
 echo "export GIT_TAG=${git_tag}"
 
+# iff main/master: v0.0.2
+# else: v0.0.2~fix-bug-3
+echo "export GITHUB_RELEASE_NAME=${GITHUB_RELEASE_NAME}"
+
 # image tag(s) to be pushed to registry/repository
 #   - always: ...:3-fix-bug
 #   - iff main/master: also ...:0.0.2
@@ -93,7 +99,10 @@ echo "export IMAGE_TAGS=( ${IMAGE_TAGS[@]} )" # keep args separate
 # else: 0.0.2-fix-bug.3+abc1234
 echo "export SEMVER=${full_semver}"
 
-# iff main/master: 0.0.2-3
+# iff main/master: 0.0.2-1
 # else: 0.0.2~fix-bug-3
+#
+# Originally, iff main/master, we set RPM_RELEASE to $build_num; it is
+# unclear if this is useful or merely distracting.
 echo "export RPM_VERSION=${rpm_ver}"
-echo "export RPM_RELEASE=${build_num}"
+echo "export RPM_RELEASE=1"
