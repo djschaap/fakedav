@@ -56,8 +56,11 @@ IMAGE_TAGS=( "${IMAGE_REPOSITORY}:${build_num}-${branch}" )
 if [ "${branch}" == "main" -o "${branch}" == "master" ] ; then
   full_semver="$(autotag -n -m "${build_num}.${git_commit}")"
 
-  # IMPORTANT: generate/commit actual git tag
-  bare_ver="$(autotag)"
+  # Originally, the actual `vN.N.N` git release tag was created by this
+  # invocation of autotag.  However, `gh` appears to do that on its own
+  # when creating a release, so we now include `-n` here to suppress
+  # the generation of a potentially confusing/conflicting git tag.
+  bare_ver="$(autotag -n)"
 
   git_tag="v${bare_ver}"
   rpm_ver=$bare_ver
