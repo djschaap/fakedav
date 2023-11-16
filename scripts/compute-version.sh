@@ -81,7 +81,7 @@ fi
 #   - GITHUB_SHA is abc1234fffff.
 
 # iff main/master: v0.0.2
-# else: v0.0.2-fix-bug.3
+#            else: v0.0.2-fix-bug.3
 echo "export GITHUB_RELEASE_NAME=${GITHUB_RELEASE_NAME}"
 
 # image tag(s) to be pushed to registry/repository
@@ -90,11 +90,11 @@ echo "export GITHUB_RELEASE_NAME=${GITHUB_RELEASE_NAME}"
 echo "export IMAGE_TAGS=( ${IMAGE_TAGS[@]} )" # keep args separate
 
 # iff main/master: 0.0.2+3.abc1234
-# else: 0.0.2-fix-bug.3+abc1234
+#            else: 0.0.2-fix-bug.3+abc1234
 echo "export SEMVER=${full_semver}"
 
-# iff main/master: 0.0.2-1
-# else: 0.0.2~fix-bug-3
+# iff main/master: RPM_VERSION=0.0.2         RPM_RELEASE=1
+#            else: RPM_VERSION=0.0.2~fix-bug RPM_RELEASE=3
 #
 # Originally, iff main/master, we set RPM_RELEASE to $build_num; it is
 # unclear if this is useful or merely distracting.
