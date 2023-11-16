@@ -16,6 +16,29 @@ a production release.
 The RPM(s) are published as a [Release](https://github.com/pantheon-systems/fusedav/releases).
 Container image(s) are published as [Packages](https://github.com/pantheon-systems/fusedav/pkgs/container/fusedav).
 
+### RPM Retrieval / Installation
+
+TODO verify this; add f28 component
+
+```sh
+# Install latest release
+curl -fsSL https://github.com/pantheon-systems/fusedav/releases/latest/download/fusedav.x86_64.rpm \
+    -o fusedav.x86_64.rpm \
+  && dnf install fusedav.x86_64.rpm
+  
+# Install specific release
+RELEASE_NAME=v0.0.0-branch.1
+curl -fsSL "https://github.com/pantheon-systems/fusedav/releases/${RELEASE_NAME}/download/fusedav.x86_64.rpm" \
+    -o fusedav.x86_64.rpm \
+  && dnf install fusedav.x86_64.rpm
+  
+# alternate method
+curl -fsSL "https://api.github.com/repos/pantheon-systems/fusedav/releases/${RELEASE_NAME}" \
+  | jq ".assets[] | select(.name==\"fusedav.x86_64.rpm\") | .browser_download_url" \
+  | xargs curl -o fusedav.x86_64.rpm -fsSL \
+  && dnf install fusedav.x86_64.rpm
+```
+
 ## Development Build
 
 ### Development Image Build
