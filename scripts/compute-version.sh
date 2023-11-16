@@ -70,7 +70,7 @@ if [ "${branch}" == "main" -o "${branch}" == "master" ] ; then
 else
   full_semver="$(autotag -n -p "${branch}.${build_num}" -m $git_commit)"
   bare_ver=$(autotag -n)
-  GITHUB_RELEASE_NAME="v${full_semver}"
+  GITHUB_RELEASE_NAME="v$(autotag -n -p "${branch}.${build_num}")"
   rpm_ver="${bare_ver}~${branch}"
 fi
 
@@ -81,7 +81,7 @@ fi
 #   - GITHUB_SHA is abc1234fffff.
 
 # iff main/master: v0.0.2
-# else: v0.0.2~fix-bug-3
+# else: v0.0.2-fix-bug.3
 echo "export GITHUB_RELEASE_NAME=${GITHUB_RELEASE_NAME}"
 
 # image tag(s) to be pushed to registry/repository
