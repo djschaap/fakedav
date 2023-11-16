@@ -19,11 +19,7 @@ for F in extract/SRPMS/*.rpm ; do
   cp $F "${T}/${n}"
 done
 
-echo
-echo "ls -l ${T}"
-ls -l ${T}
-echo
-
 gh release upload $GITHUB_RELEASE_NAME ${T}/*.rpm
+echo Done uploading release artifacts
 
 rm -rf $T
