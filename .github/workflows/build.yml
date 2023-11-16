@@ -89,7 +89,7 @@ jobs:
           # RPM version comparison operations.
           echo "Create pre-release release:"
           gh release create $GITHUB_RELEASE_NAME -p --generate-notes
-          sh scripts/upload-gh-assets.sh
+          . scripts/upload-gh-assets.sh
         if: github.ref != 'refs/heads/master'
       - name: Create GitHub release
         env:
@@ -99,5 +99,5 @@ jobs:
           # Iff master, create a regular release.
           echo "Create regular release:"
           gh release create $GITHUB_RELEASE_NAME --generate-notes
-          sh scripts/upload-gh-assets.sh
+          . scripts/upload-gh-assets.sh
         if: github.ref == 'refs/heads/master'
