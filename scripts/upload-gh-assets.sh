@@ -24,6 +24,6 @@ echo "ls -l ${T}"
 ls -l ${T}
 echo
 
-gh release upload $GITHUB_RELEASE_NAME "${T}/*.rpm"
+gh release upload $GITHUB_RELEASE_NAME ${T}/*.rpm
 
 rm -rf $T
