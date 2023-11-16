@@ -14,14 +14,6 @@
 #
 # runtime is the final runtime image.
 #
-# To build image locally:
-#   scripts/compute-version.sh | tee new-version.sh
-#   docker build --progress plain -t fusedav .
-#
-# To compile/build and extract the RPM into the `extract` directory:
-#   scripts/compute-version.sh | tee new-version.sh
-#   docker build --progress plain --target extract . --output=extract
-#
 FROM docker.io/library/fedora:28 AS base
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
