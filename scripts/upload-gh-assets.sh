@@ -5,14 +5,20 @@ set -euo pipefail
 # Before calling this script, new-version.sh MUST already be loaded into our
 # env.
 
+T=$(mktemp -d)
+
 # Upload artifacts with static/fixed names for ease of consumption.
 for F in extract/RPMS/x86_64/*.rpm ; do
   n=$(echo $F | sed -e "s,.*/\([0-9A-Za-z-]*\)-${RPM_VERSION}-${RPM_RELEASE}\(.x86_64.rpm\),\1\2,")
-  echo "upload ${F} as ${n}"
-  gh release upload $GITHUB_RELEASE_NAME "${F}#${n}"
+  echo "include ${F} as ${n}"
+  cp $F "${T}/${n}"
 done
 for F in extract/SRPMS/*.rpm ; do
   n=$(echo $F | sed -e "s,.*/\([0-9A-Za-z-]*\)-${RPM_VERSION}-${RPM_RELEASE}\(.src.rpm\),\1\2,")
-  echo "upload ${F} as ${n}"
-  gh release upload $GITHUB_RELEASE_NAME "${F}#${n}"
+  echo "include ${F} as ${n}"
+  cp $F "${T}/${n}"
 done
+
+gh release upload $GITHUB_RELEASE_NAME "${T}/*.rpm"
+
+rm -rf $T
