@@ -111,8 +111,9 @@ COPY --from=compile \
   /home/vscode/rpmbuild/RPMS/x86_64/fusedav-*.rpm \
   /tmp/
 
+# BEWARE: `.fc28` is the RPM release suffix normally added by rpmbuild.
 RUN \
   LATEST=$(cat /tmp/LATEST-RPM-VER-REL) \
-  && sudo rpm -i "/tmp/fusedav-${LATEST}.x86_64.rpm"
+  && sudo rpm -i "/tmp/fusedav-${LATEST}.fc28.x86_64.rpm"
 
 USER fusedav
