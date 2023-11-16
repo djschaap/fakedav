@@ -22,10 +22,13 @@ fi
 
 eval $(cat new-version.sh)
 
-# capture latest RPM version/release to simplify later RPM extraction
+# Capture latest RPM version/release to simplify later RPM extraction.
+#
+# Note this does NOT include the `%{?dist}` suffix that rpmbuild appends
+# to its release.
 echo "${RPM_VERSION}-${RPM_RELEASE}" > LATEST-RPM-VER-REL
 
-# create VERSION for autoconf
+# Create VERSION for autoconf.
 echo "${SEMVER}" > VERSION
 
 mkdir -p "${HOME}/rpmbuild/SOURCES" "${HOME}/rpmbuild/SPECS"
